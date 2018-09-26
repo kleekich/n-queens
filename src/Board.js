@@ -79,11 +79,42 @@
     //
     // test if a specific row on this board contains a conflict
     hasRowConflictAt: function(rowIndex) {
-      return false; // fixme
+      //Get row using by get()
+      let row = this.get(rowIndex);
+      
+      //make counter variable
+      let counter = 0;
+
+      //Iterate over 
+      for(var i = 0 ; i < row.length; i++){
+        //if we encounter 1 we add to our counter
+        if(row[i]===1) {
+          counter++;
+        }
+      }
+      
+      //if our counter is greater than 1 we return true
+      if(counter > 1){
+        return true;
+      }
+       return false;
     },
 
     // test if any rows on this board contain conflicts
     hasAnyRowConflicts: function() {
+    //We need to check all the rows here
+    //We need to use this.get('n') <--this lets us get the # of rows
+    //We'll use a for loop through 0 - 'n' (not including n)
+    //Each time we loop through we'll call hasRowConflictAt(i)
+    
+    let n = this.get('n');
+
+    for (var i = 0; i < n; i++) {
+      //if the below ever returns true
+      if (this.hasRowConflictAt(i)) {
+        return true;
+      }
+    }
       return false; // fixme
     },
 
@@ -94,12 +125,42 @@
     //
     // test if a specific column on this board contains a conflict
     hasColConflictAt: function(colIndex) {
-      return false; // fixme
+
+      //create a counter variable
+      
+
+      //we iterate all the rows
+          //let arr = this.get(0) => [0,0,0,0] => arr[colIndex]
+          //if row[i][colIndex] === 1 we increament counter by 1, check if counter is greater than 1
+      let counter = 0;
+      let numRows = this.get('n');
+      
+      for (var i = 0; i < numRows; i++) {
+        var currentRow = this.get(i);
+        if (currentRow[colIndex] === 1) {
+          counter++;
+        }
+        if (counter > 1) {
+          return true;
+        }
+      }
+      return false;
     },
 
     // test if any columns on this board contain conflicts
     hasAnyColConflicts: function() {
-      return false; // fixme
+      //Declare variable numCol = this.get('n');
+      //Iterate through to numCol
+        //call hasColConflictAt(i)
+
+      let numCol = this.get('n');
+      for(var i = 0; i < numCol; i++){
+        if(this.hasColConflictAt(i)){
+          return true;
+        }
+      }
+      return false;
+
     },
 
 
