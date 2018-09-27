@@ -169,24 +169,41 @@
     // --------------------------------------------------------------
     //
     // test if a specific major diagonal on this board contains a conflict
-    hasMajorDiagonalConflictAt: function(majorDiagonalColumnIndexAtFirstRow) {
-      
-     
+    hasMajorDiagonalConflictAt: function(firstIndex) {
       let matrix = this.rows();
       let counter = 0;
-      let startCol = majorDiagonalColumnIndexAtFirstRow;
-      let i = 0;
-      //Using starting point, Iterate our matrix j = start
-      for (var j = startCol; j < this.get('n'); j++) {
-        //if matrix[i][j] is 1, counter++
-        if (matrix[i][j] === 1) {
-          counter++;
+      let n = this.get('n');
+      
+      //negative index cases
+      if(firstIndex < 0){
+        let startRow = Math.abs(firstIndex);
+        let j = 0;
+        for( var i = startRow ; i < n; i++){
+          if(matrix[i][j] === 1){
+            counter++;
+          }
+          if( counter >1){
+            return true;  
+          }
+          j++;
         }
-        if (counter > 1) {
-          return true;
+      //positive indexes cases 
+      //For right half of matrix, use colIndex as colume index  
+      }else{
+        let startCol = firstIndex;
+        let i = 0;
+        //Using starting point, Iterate our matrix j = start
+        for (var j = startCol; j < n; j++) {
+          //if matrix[i][j] is 1, counter++
+          if (matrix[i][j] === 1) {
+            counter++;
+          }
+          if (counter > 1) {
+            return true;
+          }
+          //increment rowIndex
+          i++;
         }
-        //increment rowIndex
-        i++;
       }
       return false;
     },
@@ -197,23 +214,19 @@
       //Iterate bottom row range(0, n) to check left half of matrix
       for (var j = 0; j < n-1; j++) {
         //get first rowIndex using _getFirstRowColumnIndexForMajorDiagonalOn
-        let firstRowIndex = Math.abs(this._getFirstRowColumnIndexForMajorDiagonalOn(n-1, j));
+        let firstColIndex = this._getFirstRowColumnIndexForMajorDiagonalOn(n-1, j);
         //if any has conflict, return true;
-        if (this.hasMajorDiagonalConflictAt(firstRowIndex)) {
+        if (this.hasMajorDiagonalConflictAt(firstColIndex)) {
           return true;
         }  
       }
-
       //Iterate rihgt col range(n-2, 0) to check right half of matrix
       for (var i = n-1; i >= 0; i--) {
-        let firstRowIndex = Math.abs(this._getFirstRowColumnIndexForMajorDiagonalOn(i, n-1));
+        let firstRowIndex = this._getFirstRowColumnIndexForMajorDiagonalOn(i, n-1);
         if (this.hasMajorDiagonalConflictAt(firstRowIndex)) {
           return true;
         }
       }
-        //get first rowIndex using built-in function
-        //Get absolute value for index
-        //if any has conflict, return true;
       
       return false;
     },
@@ -224,19 +237,76 @@
     // --------------------------------------------------------------
     //
     // test if a specific minor diagonal on this board contains a conflict
-    hasMinorDiagonalConflictAt: function(minorDiagonalColumnIndexAtFirstRow) {
-      return false; // fixme
+    hasMinorDiagonalConflictAt: function(firstIndex) {
+      //We set a variable to be our matrix      
+      //We're starting at the top right of our matrix and going right to left
+      //As we iterate we decrement our colIndex while incrementing our row so that we 
+      //go down and left as we check for Queens
+
+      let matrix = this.rows();
+      let counter = 0;
+      let n = this.get('n')
+    
+      if (firstIndex < n) {
+        //left half case
+        let startCol = firstIndex;
+        let row = 0;
+        //Here we set our start as the firstIndex passed in, and decrement as we iterate
+        for (var j = starCol; j >= 0; j--) {
+          if (matrix[row][j] === 1) {
+            counter++;
+          }
+          if (counter > 1) {
+            return true;
+          }
+          //increment row so we head down
+          row++;
+        }
+      } else {
+        //right half case
+        //We need to subtract 3 from starting row to get proper index within matrix
+        let startRow = firstIndex - (n - 1) ;
+        let col = n - 1
+        for (var i = startRow; i < n-1; i++) {
+          if (matrix[i][col] === 1) {
+            counter++
+          }
+          if (counter > 1) {
+            return true;
+          }
+        col--;
+        }
+      }  
+      return false;
     },
 
     // test if any minor diagonals on this board contain conflicts
     hasAnyMinorDiagonalConflicts: function() {
-      return false; // fixme
+    //We want to get our starting index by calling _getFirstRowColumnIndexForMinorDiagonalOn
+    //We want to call hasMinorDiagonalConflictAt on the left and bottom most indexes
+    //stop if we get a true
+    let n = this.get('n');
+
+    for (var i = 0; i < n; i++) {
+      let firstIndex = this._getFirstRowColumnIndexForMinorDiagonalOn(i, 0);
+      if (this.hasMinorDiagonalConflictAt(firstIndex)) {
+        return true;
+      }
     }
+    for (var j = 1; j < n; j++) {
+      let firstIndex = this._getFirstRowColumnIndexForMinorDiagonalOn(n-1, j);
+      if (this.hasMinorDiagonalConflictAt(firstIndex)) {
+        return true;
+      }
+    }      
+    return false;
+  }    
+});    
 
-    /*--------------------  End of Helper Functions  ---------------------*/
+/*--------------------  End of Helper Functions  ---------------------*/
 
 
-  });
+ 
 
   var makeEmptyMatrix = function(n) {
     return _(_.range(n)).map(function() {
