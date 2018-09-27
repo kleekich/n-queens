@@ -69,7 +69,6 @@
     / __| __/ _` | '__| __| | '_ \ / _ \ '__/ _ (_)
     \__ \ || (_| | |  | |_  | | | |  __/ | |  __/_
     |___/\__\__,_|_|   \__| |_| |_|\___|_|  \___(_)
-
  */
     /*=========================================================================
     =                 TODO: fill in these Helper Functions                    =
@@ -252,7 +251,7 @@
         let startCol = firstIndex;
         let row = 0;
         //Here we set our start as the firstIndex passed in, and decrement as we iterate
-        for (var j = starCol; j >= 0; j--) {
+        for (var j = startCol; j >= 0; j--) {
           if (matrix[row][j] === 1) {
             counter++;
           }
@@ -267,7 +266,7 @@
         //We need to subtract 3 from starting row to get proper index within matrix
         let startRow = firstIndex - (n - 1) ;
         let col = n - 1
-        for (var i = startRow; i < n-1; i++) {
+        for (var i = startRow; i < n; i++) {
           if (matrix[i][col] === 1) {
             counter++
           }
@@ -282,17 +281,19 @@
 
     // test if any minor diagonals on this board contain conflicts
     hasAnyMinorDiagonalConflicts: function() {
-    //We want to get our starting index by calling _getFirstRowColumnIndexForMinorDiagonalOn
-    //We want to call hasMinorDiagonalConflictAt on the left and bottom most indexes
+    
+    //We want to call hasMinorDiagonalConflictAt on the left and bottom most indexes                
     //stop if we get a true
     let n = this.get('n');
-
+    //LEFT HALF
     for (var i = 0; i < n; i++) {
       let firstIndex = this._getFirstRowColumnIndexForMinorDiagonalOn(i, 0);
       if (this.hasMinorDiagonalConflictAt(firstIndex)) {
         return true;
       }
     }
+
+    //RIGHT HALF
     for (var j = 1; j < n; j++) {
       let firstIndex = this._getFirstRowColumnIndexForMinorDiagonalOn(n-1, j);
       if (this.hasMinorDiagonalConflictAt(firstIndex)) {
