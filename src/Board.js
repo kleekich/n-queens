@@ -29,6 +29,7 @@
       this.trigger('change');
     },
 
+    //this tells us where in the first row to start your diagonal
     _getFirstRowColumnIndexForMajorDiagonalOn: function(rowIndex, colIndex) {
       return colIndex - rowIndex;
     },
@@ -152,7 +153,6 @@
       //Declare variable numCol = this.get('n');
       //Iterate through to numCol
         //call hasColConflictAt(i)
-
       let numCol = this.get('n');
       for(var i = 0; i < numCol; i++){
         if(this.hasColConflictAt(i)){
@@ -170,12 +170,52 @@
     //
     // test if a specific major diagonal on this board contains a conflict
     hasMajorDiagonalConflictAt: function(majorDiagonalColumnIndexAtFirstRow) {
-      return false; // fixme
+      
+     
+      let matrix = this.rows();
+      let counter = 0;
+      let startCol = majorDiagonalColumnIndexAtFirstRow;
+      let i = 0;
+      //Using starting point, Iterate our matrix j = start
+      for (var j = startCol; j < this.get('n'); j++) {
+        //if matrix[i][j] is 1, counter++
+        if (matrix[i][j] === 1) {
+          counter++;
+        }
+        if (counter > 1) {
+          return true;
+        }
+        //increment rowIndex
+        i++;
+      }
+      return false;
     },
 
     // test if any major diagonals on this board contain conflicts
     hasAnyMajorDiagonalConflicts: function() {
-      return false; // fixme
+      var n = this.get('n');
+      //Iterate bottom row range(0, n) to check left half of matrix
+      for (var j = 0; j < n-1; j++) {
+        //get first rowIndex using _getFirstRowColumnIndexForMajorDiagonalOn
+        let firstRowIndex = Math.abs(this._getFirstRowColumnIndexForMajorDiagonalOn(n-1, j));
+        //if any has conflict, return true;
+        if (this.hasMajorDiagonalConflictAt(firstRowIndex)) {
+          return true;
+        }  
+      }
+
+      //Iterate rihgt col range(n-2, 0) to check right half of matrix
+      for (var i = n-1; i >= 0; i--) {
+        let firstRowIndex = Math.abs(this._getFirstRowColumnIndexForMajorDiagonalOn(i, n-1));
+        if (this.hasMajorDiagonalConflictAt(firstRowIndex)) {
+          return true;
+        }
+      }
+        //get first rowIndex using built-in function
+        //Get absolute value for index
+        //if any has conflict, return true;
+      
+      return false;
     },
 
 
