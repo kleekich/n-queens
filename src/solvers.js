@@ -24,14 +24,16 @@ window.findNRooksSolution = function(n) {
   let boardObject = new Board({ n : n });
   //We'll make a board that is a nxn matrix
   var rooks = 0;
+  //var found = false;
   //count = 0
   //Build a recursive function to add additional rook and test for conflicts
   var helper = function(boardObject, startIndex) {
-    let board = boardObject.attributes;
-    if(rooks === n && !boardObject.hasAnyRowConflicts(board) && !boardObject.hasAnyColConflicts(board)){
+    let board = boardObject.rows();
+    if(rooks === n+1 && !boardObject.hasAnyRowConflicts(board) && !boardObject.hasAnyColConflicts(board)){
       //solutionsArr.push(board)
-  
-      solution = newArray;
+      //solution = board;
+      //found = true;
+      return board;
     }else if (startIndex === (n*n) || rooks > n) {
       return;
     }else{
@@ -46,21 +48,23 @@ window.findNRooksSolution = function(n) {
         board[rowIndex][colIndex] = 1;
         rooks++;
         if(!boardObject.hasAnyRowConflicts(board) && !boardObject.hasAnyColConflicts(board)) {
-          helper(boardObject, startIndex +1);
+          var newIndex = i+1;
+          var result = helper(boardObject, newIndex);
+          return result;
+        }else{
+          board[rowIndex][colIndex] = 0;
+          rooks--;
         }
-        board[rowIndex][colIndex] = 0;
-        rooks--;
-        
+        //if(!found) {
+          
         //}
-        //We'll call our hasAnyConflicts helper on each grid
-        // if (rooks > 1 && !this.hasAnyRowConflicts(board) && !this.hasAnyColConflicts(board)) {
-        //   helper(board, startIndex + 1);
-        // }
+        
+        
       }
     }
   }
   //Return the first matrix that passes
-  helper(boardObject, 0);
+  solution = helper(boardObject, 0);
   console.log('Single solution for ' + n + ' rooks:', JSON.stringify(solution));
   return solution;
 
