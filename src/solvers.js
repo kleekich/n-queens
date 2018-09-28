@@ -16,7 +16,7 @@
 
 
 window.findNRooksSolution = function(n) {
-  
+  //let solutionsArr = [];
   if(n==1) {
     return [[1]];
   } 
@@ -24,18 +24,19 @@ window.findNRooksSolution = function(n) {
   let boardObject = new Board({ n : n });
   //We'll make a board that is a nxn matrix
   var rooks = 0;
-
+  //count = 0
   //Build a recursive function to add additional rook and test for conflicts
   var helper = function(boardObject, startIndex) {
     let board = boardObject.attributes;
     if(rooks === n && !boardObject.hasAnyRowConflicts(board) && !boardObject.hasAnyColConflicts(board)){
-      solution = board;
-      
+      //solutionsArr.push(board)
+  
+      solution = newArray;
     }else if (startIndex === (n*n) || rooks > n) {
       return;
     }else{
-      //iterate over matrix -- fix this \/  
-      for (var i = startIndex; i < (n*n-1); i++) {
+      //iterate over matrix 
+      for (var i = startIndex; i < (n*n); i++) {
         //check if current[i] is 0, if it is, change it to 1
         var numberOfRows = n;
         var numberOfCols = n;
@@ -48,6 +49,8 @@ window.findNRooksSolution = function(n) {
           helper(boardObject, startIndex +1);
         }
         board[rowIndex][colIndex] = 0;
+        rooks--;
+        
         //}
         //We'll call our hasAnyConflicts helper on each grid
         // if (rooks > 1 && !this.hasAnyRowConflicts(board) && !this.hasAnyColConflicts(board)) {
@@ -67,6 +70,49 @@ window.findNRooksSolution = function(n) {
 window.countNRooksSolutions = function(n) {
   var solutionCount = undefined; //fixme
 
+  let solutionsArr = [];
+  if(n==1) {
+    return [[1]];
+  } 
+  let solution;
+  let boardObject = new Board({ n : n });
+  //We'll make a board that is a nxn matrix
+  var rooks = 0;
+  //count = 0
+  //Build a recursive function to add additional rook and test for conflicts
+  var helper = function(boardObject, startIndex) {
+    let board = boardObject.attributes;
+    if(rooks === n && !boardObject.hasAnyRowConflicts(board) && !boardObject.hasAnyColConflicts(board)){
+      solutionsArr.push(board)
+      // solution = board;
+      return;
+    }else if (startIndex === (n*n) || rooks > n) {
+      return;
+    }else{
+      //iterate over matrix 
+      for (var i = startIndex; i < (n*n); i++) {
+        //check if current[i] is 0, if it is, change it to 1
+        var numberOfRows = n;
+        var numberOfCols = n;
+        var rowIndex = Math.floor(i / numberOfRows);
+        var colIndex = Math.floor(i % numberOfCols);
+        //if (board[rowIndex][colIndex] === 0) {
+        board[rowIndex][colIndex] = 1;
+        rooks++;
+        if(!boardObject.hasAnyRowConflicts(board) && !boardObject.hasAnyColConflicts(board)) {
+          helper(boardObject, startIndex +1);
+        }
+        board[rowIndex][colIndex] = 0;
+        rooks--;
+        //}
+        //We'll call our hasAnyConflicts helper on each grid
+        // if (rooks > 1 && !this.hasAnyRowConflicts(board) && !this.hasAnyColConflicts(board)) {
+        //   helper(board, startIndex + 1);
+        // }
+      }
+    }
+  }
+  solutionsCount = solutionsArr.length;
   console.log('Number of solutions for ' + n + ' rooks:', solutionCount);
   return solutionCount;
 };
